@@ -1,3 +1,6 @@
 *.zip
-*.zip:Zone.Identifier
+*.docx
+*:Zone.Identifier
 .omc/
+.vercel
+.env*
