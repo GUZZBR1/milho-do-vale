@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 560" role="img" aria-labelledby="title desc">
+  <title id="title">Espiga de milho</title>
+  <desc id="desc">Ilustração de uma espiga de milho com grãos amarelos e folhas verdes.</desc>
+  <defs>
+    <linearGradient id="cob" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f6d65e"/><stop offset="1" stop-color="#d99518"/></linearGradient>
+    <linearGradient id="leaf" x1="0" x2="1"><stop stop-color="#214f32"/><stop offset="1" stop-color="#78a158"/></linearGradient>
+  </defs>
+  <g transform="rotate(-7 180 280)">
+    <path d="M107 525c-34-94-45-192-15-313C114 97 144 36 180 22c36 14 66 75 88 190 30 121 19 219-15 313z" fill="url(#leaf)" stroke="#173d2a" stroke-width="5"/>
+    <path d="M134 513c-17-100-23-189 4-303C151 111 168 61 180 42c12 19 29 69 42 168 27 114 21 203 4 303z" fill="url(#cob)" stroke="#b87917" stroke-width="5"/>
+    <g fill="#f8dd68" stroke="#c88a1c" stroke-width="2">
+      <ellipse cx="158" cy="139" rx="14" ry="19"/><ellipse cx="190" cy="136" rx="14" ry="19"/>
+      <ellipse cx="150" cy="179" rx="14" ry="19"/><ellipse cx="183" cy="177" rx="14" ry="19"/><ellipse cx="215" cy="177" rx="14" ry="19"/>
+      <ellipse cx="145" cy="219" rx="14" ry="19"/><ellipse cx="178" cy="218" rx="14" ry="19"/><ellipse cx="211" cy="218" rx="14" ry="19"/>
+      <ellipse cx="139" cy="259" rx="14" ry="19"/><ellipse cx="172" cy="258" rx="14" ry="19"/><ellipse cx="205" cy="259" rx="14" ry="19"/><ellipse cx="229" cy="263" rx="12" ry="17"/>
+      <ellipse cx="137" cy="300" rx="14" ry="19"/><ellipse cx="169" cy="299" rx="14" ry="19"/><ellipse cx="201" cy="300" rx="14" ry="19"/><ellipse cx="225" cy="303" rx="12" ry="17"/>
+      <ellipse cx="137" cy="341" rx="14" ry="19"/><ellipse cx="169" cy="340" rx="14" ry="19"/><ellipse cx="201" cy="341" rx="14" ry="19"/><ellipse cx="224" cy="344" rx="12" ry="17"/>
+      <ellipse cx="141" cy="382" rx="14" ry="19"/><ellipse cx="173" cy="381" rx="14" ry="19"/><ellipse cx="204" cy="382" rx="14" ry="19"/><ellipse cx="220" cy="385" rx="11" ry="16"/>
+    </g>
+    <path d="M180 40C129 120 108 245 133 500M180 40c51 80 72 205 47 460" fill="none" stroke="#a6c17a" stroke-linecap="round" stroke-width="7" opacity=".7"/>
+  </g>
+</svg>
