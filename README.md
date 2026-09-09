@@ -10,6 +10,9 @@ Landing page estática do Milho do Vale, produção local de milho verde em São
 - `assets/corn-360/frame-00.webp` … `frame-23.webp` — sequência de 24 ângulos (15° cada), convertida dos PNGs individuais 1024×1536 da pasta `milho/Amostra_Espiga_360` no Google Drive para WebP 960×1440. O canvas retorna ao primeiro frame ao concluir exatamente uma volta.
 - `assets/field/origin-field.webp` — fotografia panorâmica otimizada usada no crossfade produto → campo e na abertura da origem.
 - `assets/journey/*.webp` — seis fotografias documentais otimizadas para Preparo, Plantio, Cultivo, Colheita, Seleção e Entrega.
+- `assets/logo-source.png` — logo oficial (selo circular) em resolução original, recortada apenas para remover a margem transparente; fonte para reexportar `logo-mark.webp` e os favicons.
+- `assets/logo-mark.webp` — versão 200×200 do logo usada na marca do cabeçalho e do rodapé.
+- `assets/favicon-32.png`, `assets/favicon-48.png`, `assets/favicon-180.png` — favicon e ícone de tela inicial (Apple touch icon) gerados a partir do logo oficial.
 - `tests/blueprint-contract.test.mjs` — verificações estáticas dos requisitos estruturais e de performance do blueprint.
 
 ## Executar localmente

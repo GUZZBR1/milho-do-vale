@@ -31,7 +31,7 @@ img { max-width: 100%; display: block; }
 .site-header.is-scrolled { background: rgba(245, 240, 228, .92); backdrop-filter: blur(8px); box-shadow: 0 1px 0 var(--line); }
 
 .brand { align-items: center; display: inline-flex; font-size: .88rem; font-weight: 700; gap: 9px; letter-spacing: -.02em; }
-.brand-mark { align-items: center; background: var(--corn); border-radius: 50%; color: var(--forest); display: inline-flex; font-size: .7rem; height: 26px; justify-content: center; width: 26px; }
+.brand-mark { border-radius: 50%; display: inline-block; flex-shrink: 0; height: 36px; object-fit: cover; width: 36px; }
 .main-nav { align-items: center; display: flex; gap: 28px; font-size: .82rem; font-weight: 600; }
 .main-nav a:not(.button) { transition: color .2s ease; }
 .main-nav a:not(.button):hover { color: var(--forest); }
