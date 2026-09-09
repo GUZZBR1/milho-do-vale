@@ -16,6 +16,8 @@ test("preserva a copy de conversão e a mensagem do WhatsApp do blueprint", () =
   assert.match(html, /Quero milho fresco/i);
   assert.match(html, /Pedir pelo WhatsApp/i);
   assert.match(script, /Olá! Vim pelo site do Milho do Vale e gostaria de saber sobre disponibilidade e valores\./);
+  assert.match(html, /<link rel="preload" as="image" href="assets\/corn-transition\.png"/);
+  assert.match(html, /class="hero-visual[^"]*"[\s\S]*?<img src="assets\/corn-transition\.png"/);
 });
 
 test("implementa uma volta completa com mensagens por quadrante", () => {
