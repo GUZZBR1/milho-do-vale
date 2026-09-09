@@ -58,6 +58,8 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 .hero { align-items: center; display: grid; gap: 50px; grid-template-columns: 1.1fr .9fr; min-height: 640px; padding: 60px 0 70px; width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
 .hero-text { font-size: 1.05rem; max-width: 420px; }
 .hero-microcopy { color: var(--earth); font-size: .78rem; font-weight: 600; letter-spacing: .04em; margin-top: 24px; }
+.harvest-badge { align-items: center; background: rgba(233, 184, 50, .16); border: 1px solid rgba(233, 184, 50, .55); border-radius: 999px; color: var(--forest); display: inline-flex; font-size: .76rem; font-weight: 600; gap: 9px; margin: 0 0 28px; padding: 9px 17px; }
+.harvest-dot { background: var(--corn); border-radius: 50%; flex-shrink: 0; height: 8px; width: 8px; }
 .hero-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 22px; margin-top: 34px; }
 .hero-visual { align-items: center; background: var(--warm-white); border-radius: 32% 32% 10% 10%; display: flex; justify-content: center; min-height: 480px; overflow: hidden; position: relative; }
 .hero-visual img { filter: drop-shadow(16px 20px 18px rgba(9, 42, 26, .16)); max-height: 420px; position: relative; width: auto; z-index: 1; }

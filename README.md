@@ -2,6 +2,8 @@
 
 Landing page estática do Milho do Vale, produção local de milho verde em São José dos Campos — SP.
 
+A primeira colheita está prevista para **fevereiro de 2027**, então a página trabalha com reserva antecipada, não com venda imediata: os CTAs falam em reservar e a mensagem do WhatsApp já sai com esse contexto. Quando a colheita chegar, revise a data no selo do hero (`.harvest-badge`), o texto da seção `#pedido` e `WHATSAPP_MESSAGE` em `script.js`.
+
 ## Estrutura
 
 - `index.html` — estrutura semântica da página, seguindo o blueprint em `Milho_do_Vale_Landing_Page_Blueprint_V1.docx`.
