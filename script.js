@@ -216,10 +216,12 @@ if (transitionSection) {
   const cornImg = transitionSection.querySelector(".transition-corn");
   const fieldImg = transitionSection.querySelector(".transition-field");
   const originLine = transitionSection.querySelector(".transition-origin-line");
+  const originCopy = transitionSection.querySelector(".transition-origin-copy");
 
   if (prefersReducedMotion) {
     lines.forEach((line) => line.classList.add("is-visible"));
     originLine?.classList.add("is-visible");
+    originCopy?.classList.add("is-visible");
   } else {
     let ticking = false;
     const onTransitionScroll = () => {
@@ -230,11 +232,11 @@ if (transitionSection) {
         const total = transitionSection.offsetHeight - window.innerHeight;
         const progress = Math.min(1, Math.max(0, -rect.top / total));
 
-        lines[0]?.classList.toggle("is-visible", progress > 0.15);
-        lines[1]?.classList.toggle("is-visible", progress > 0.45);
-        const fieldProgress = Math.min(1, Math.max(0, (progress - 0.55) / 0.3));
+        lines[0]?.classList.toggle("is-visible", progress > 0.09);
+        lines[1]?.classList.toggle("is-visible", progress > 0.28);
+        const fieldProgress = Math.min(1, Math.max(0, (progress - 0.34) / 0.19));
         if (cornImg) {
-          cornImg.style.transform = `scale(${1 + progress * 0.55})`;
+          cornImg.style.transform = `scale(${1 + progress * 0.88})`;
           cornImg.style.opacity = String(0.9 * (1 - fieldProgress));
         }
         if (fieldImg) {
@@ -242,8 +244,9 @@ if (transitionSection) {
           fieldImg.style.transform = `scale(${1.05 - fieldProgress * 0.05})`;
         }
         transitionSection.querySelector(".transition-sticky")?.classList.toggle("has-field", fieldProgress > 0.05);
-        originLine?.classList.toggle("is-visible", progress > 0.82);
-        transitionSection.querySelector(".transition-copy")?.style.setProperty("opacity", String(1 - Math.min(1, Math.max(0, (progress - 0.62) / 0.18))));
+        originLine?.classList.toggle("is-visible", progress > 0.51 && progress < 0.76);
+        originCopy?.classList.toggle("is-visible", progress > 0.76);
+        transitionSection.querySelector(".transition-copy")?.style.setProperty("opacity", String(1 - Math.min(1, Math.max(0, (progress - 0.39) / 0.11))));
         ticking = false;
       });
     };

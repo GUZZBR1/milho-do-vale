@@ -9,7 +9,7 @@ Landing page estática do Milho do Vale, produção local de milho verde em São
 - `script.js` — menu mobile, rotação 360° por scroll, timeline animada, transição produto → campo e CTA do WhatsApp.
 - `assets/corn-360/frame-00.webp` … `frame-23.webp` — sequência de 24 ângulos (15° cada), convertida dos PNGs individuais 1024×1536 da pasta `milho/Amostra_Espiga_360` no Google Drive para WebP 960×1440. O canvas retorna ao primeiro frame ao concluir exatamente uma volta.
 - `assets/corn-transition.png` — recorte RGBA com fundo transparente usado no hero e na transição da espiga para o campo.
-- `assets/field/origin-field.webp` — fotografia panorâmica otimizada usada no crossfade produto → campo; o mesmo fundo permanece fixo enquanto o texto muda para a seção de origem, evitando repetir a imagem.
+- `assets/field/origin-field.webp` — fotografia panorâmica otimizada usada no crossfade produto → campo. A foto fica fixa até o fim do bloco de scroll: só o letreiro troca em crossfade, de "É aqui que tudo começa" para o texto da origem, sem repetir a imagem.
 - `assets/journey/*.webp` — seis fotografias documentais otimizadas para Preparo, Plantio, Cultivo, Colheita, Seleção e Entrega.
 - `assets/logo-source.png` — logo oficial (selo circular) em resolução original, recortada apenas para remover a margem transparente; fonte para reexportar `logo-mark.webp` e os favicons.
 - `assets/logo-mark.webp` — versão 200×200 do logo usada na marca do cabeçalho e do rodapé.
