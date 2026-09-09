@@ -27,6 +27,7 @@ test("implementa uma volta completa com mensagens por quadrante", () => {
 
 test("implementa crossfade para o campo e seis etapas fotografadas", () => {
   assert.match(html, /class="transition-field"/);
+  assert.match(html, /class="transition-corn" src="assets\/corn-transition\.png"/);
   assert.match(html, /assets\/field\/origin-field\.webp/);
   assert.match(css, /\.transition-corn\s*\{[^}]*height:\s*auto;/, "a espiga da transição deve preservar sua proporção");
   assert.equal((html.match(/class="timeline-item(?: timeline-item-right)? reveal"/g) ?? []).length, 6);
@@ -57,4 +58,7 @@ test("mantém os assets WebP leves e completos", async () => {
 
   const fieldInfo = await stat(path.join(projectRoot, "assets", "field", "origin-field.webp"));
   assert.ok(fieldInfo.size < 150_000, "origin-field.webp excede 150 KB");
+
+  const transitionCorn = await readFile(path.join(projectRoot, "assets", "corn-transition.png"));
+  assert.equal(transitionCorn[25], 6, "corn-transition.png deve usar PNG RGBA com canal alfa");
 });
