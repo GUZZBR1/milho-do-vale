@@ -34,7 +34,7 @@ test("implementa crossfade para o campo e seis etapas fotografadas", () => {
   assert.match(css, /\.transition-corn\s*\{[^}]*height:\s*auto;/, "a espiga da transição deve preservar sua proporção");
   assert.equal((html.match(/class="timeline-item(?: timeline-item-right)? reveal"/g) ?? []).length, 6);
   assert.equal((html.match(/assets\/journey\/[^"]+\.webp/g) ?? []).length, 6);
-  assert.equal((html.match(/loading="lazy"/g) ?? []).length, 8);
+  assert.equal((html.match(/loading="lazy"/g) ?? []).length, 7);
 });
 
 test("mantém os tokens visuais e fallbacks de acessibilidade", () => {

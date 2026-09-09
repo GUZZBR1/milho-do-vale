@@ -115,10 +115,7 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 
 /* Origin */
 .origin { background: var(--deep-forest); color: var(--warm-white); overflow: hidden; position: relative; }
-.origin-visual { height: 62vh; min-height: 380px; position: relative; }
-.origin-visual::after { background: linear-gradient(180deg, rgba(9, 42, 26, .05), var(--deep-forest)); content: ""; inset: 0; position: absolute; }
-.origin-visual img { height: 100%; object-fit: cover; width: 100%; }
-.origin-copy { padding: 70px 24px 90px; text-align: center; }
+.origin-copy { padding: 90px 24px; text-align: center; }
 .origin-copy h2 em { color: var(--corn); }
 .origin-copy p:not(.section-kicker) { font-size: 1.05rem; margin: 0 auto; max-width: 440px; opacity: .85; }
 .place-label { align-items: center; border-top: 1px solid rgba(252, 250, 245, .2); display: inline-flex; gap: 13px; margin-top: 40px; padding-top: 20px; }
@@ -211,7 +208,7 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
   .corn360-message span { max-width: 190px; }
   .corn360-message[data-quadrant] { bottom: 8%; left: 50%; right: auto; text-align: center; top: auto; transform: translate(-50%, 10px); }
   .corn360-message.is-active { transform: translate(-50%, 0); }
-  .origin-copy { padding: 55px 20px 70px; }
+  .origin-copy { padding: 60px 20px; }
   .journey { padding: 85px 0; }
   .order { border-radius: 18px; flex-direction: column; align-items: flex-start; gap: 34px; margin-bottom: 60px; padding: 40px 26px; }
   .footer-inner { align-items: flex-start; flex-direction: column; }
