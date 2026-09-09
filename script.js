@@ -4,7 +4,7 @@ const WHATSAPP_NUMBER = "5512982854348";
 const WHATSAPP_MESSAGE = "Olá! Vim pelo site do Milho do Vale e gostaria de saber sobre disponibilidade e valores.";
 
 // Set the Instagram handle (without @) when available, e.g. "milhodovale".
-const INSTAGRAM_HANDLE = "";
+const INSTAGRAM_HANDLE = "milhodovale.sjc";
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -288,15 +288,24 @@ if ("IntersectionObserver" in window && !prefersReducedMotion) {
   timelineItems.forEach((item) => item.classList.add("is-active"));
 }
 
-// Floating WhatsApp button — expand with a label near the conversion sections
+// Floating WhatsApp button — expand near the order section, step aside over the footer contacts
 const floatButton = document.querySelector("#whatsapp-float");
-const expandTargets = document.querySelectorAll("#pedido, .site-footer");
+const orderSection = document.querySelector("#pedido");
+const footerContacts = document.querySelector(".footer-meta");
 
-if (floatButton && expandTargets.length && "IntersectionObserver" in window) {
-  const expandObserver = new IntersectionObserver((entries) => {
-    const shouldExpand = entries.some((entry) => entry.isIntersecting);
-    floatButton.classList.toggle("is-expanded", shouldExpand);
-  }, { threshold: 0.2 });
+if (floatButton && "IntersectionObserver" in window) {
+  if (orderSection) {
+    const expandObserver = new IntersectionObserver(([entry]) => {
+      floatButton.classList.toggle("is-expanded", entry.isIntersecting);
+    }, { threshold: 0.2 });
+    expandObserver.observe(orderSection);
+  }
 
-  expandTargets.forEach((target) => expandObserver.observe(target));
+  // Only the bottom strip of the viewport matters: that is where the button sits.
+  if (footerContacts) {
+    const footerObserver = new IntersectionObserver(([entry]) => {
+      floatButton.classList.toggle("is-hidden", entry.isIntersecting);
+    }, { rootMargin: "-85% 0px 0px 0px" });
+    footerObserver.observe(footerContacts);
+  }
 }

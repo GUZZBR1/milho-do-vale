@@ -31,7 +31,7 @@ node --test tests/blueprint-contract.test.mjs
 - Os frames individuais disponíveis no Drive ainda são uma amostra gerada de pré-produção, não fotografia real — o blueprint (seção 14) já lista a aprovação do asset definitivo como pendência.
 - A sequência aprovada disponível no Drive possui 24 ângulos. Para chegar aos 48–72 frames recomendados sem duplicação visual, ainda é necessário gerar novos ângulos consistentes a partir da mesma espiga.
 - As imagens de campo e da jornada são assets de protótipo gerados por IA; devem ser substituídas pelas fotografias reais aprovadas antes da publicação definitiva.
-- Número de WhatsApp definitivo, handle do Instagram e domínio próprio continuam pendentes de confirmação.
+- Domínio próprio continua pendente de confirmação. WhatsApp (`+55 12 98285-4348`) e Instagram (`@milhodovale.sjc`) já estão configurados.
 
 ## Origem dos assets visuais adicionados
 
