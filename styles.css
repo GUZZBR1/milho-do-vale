@@ -90,7 +90,7 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 /* Transition */
 .transition-section { background: #f3f0e7; height: 250vh; position: relative; }
 .transition-sticky { align-items: center; display: flex; flex-direction: column; height: 100vh; justify-content: center; isolation: isolate; overflow: hidden; position: sticky; top: 0; }
-.transition-corn { filter: drop-shadow(0 22px 24px rgba(9, 42, 26, .18)); max-width: 260px; opacity: .9; position: relative; transition: transform .12s linear, opacity .2s linear; width: 55%; z-index: 2; }
+.transition-corn { filter: drop-shadow(0 22px 24px rgba(9, 42, 26, .18)); height: auto; max-width: 260px; opacity: .9; position: relative; transition: transform .12s linear, opacity .2s linear; width: 55%; z-index: 2; }
 .transition-field { height: 100%; inset: 0; object-fit: cover; opacity: 0; position: absolute; transform: scale(1.05); transition: opacity .12s linear, transform .12s linear; width: 100%; z-index: 0; }
 .transition-sticky::after { background: linear-gradient(180deg, rgba(9, 42, 26, .12), rgba(9, 42, 26, .72)); content: ""; inset: 0; opacity: 0; pointer-events: none; position: absolute; transition: opacity .12s linear; z-index: 1; }
 .transition-sticky.has-field::after { opacity: 1; }
