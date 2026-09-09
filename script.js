@@ -1,6 +1,6 @@
 // Configure the business WhatsApp number here when available.
 // Use international format without +, spaces or punctuation, e.g. 5512999999999.
-const WHATSAPP_NUMBER = "";
+const WHATSAPP_NUMBER = "5512982854348";
 const WHATSAPP_MESSAGE = "Olá! Vim pelo site do Milho do Vale e gostaria de saber sobre disponibilidade e valores.";
 
 // Set the Instagram handle (without @) when available, e.g. "milhodovale".
