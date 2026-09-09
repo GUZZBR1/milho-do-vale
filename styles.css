@@ -206,6 +206,7 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
   .hero-visual img { max-height: 300px; }
   .corn360-sticky { height: 320vh; }
   #corn360-canvas, .corn360-fallback { max-height: 58vh; max-width: 72vw; }
+  .corn360-hint { bottom: auto; top: 6%; }
   .corn360-message { background: rgba(245, 240, 228, .88); border-radius: 14px; max-width: min(220px, 62vw); padding: 12px 14px; }
   .corn360-message span { max-width: 190px; }
   .corn360-message[data-quadrant] { bottom: 8%; left: 50%; right: auto; text-align: center; top: auto; transform: translate(-50%, 10px); }
