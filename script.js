@@ -135,6 +135,7 @@ const transitionSticky = transitionSection?.querySelector(".transition-sticky");
 const transitionCopy = transitionSection?.querySelector(".transition-copy");
 const scrollCorn = document.querySelector("#scroll-corn");
 const heroCornSlot = document.querySelector('[data-corn-slot="hero"]');
+const heroVisual = heroCornSlot?.closest(".hero-visual");
 const storyCornSlot = document.querySelector('[data-corn-slot="story"]');
 const transitionCornSlot = document.querySelector('[data-corn-slot="transition"]');
 const cornMessages = document.querySelectorAll(".corn360-message");
@@ -151,26 +152,47 @@ function updateCornMessage(progress) {
 
 if (!prefersReducedMotion && scrollCorn && heroCornSlot && storyCornSlot && transitionCornSlot && corn360Section && transitionSection) {
   const BASE_WIDTH = 512;
+  const BASE_HEIGHT = 768;
+  const SUBJECT_CENTER_X = 294;
+  const SUBJECT_CENTER_Y = 374.5;
   let currentState;
   let targetState;
   let animationFrame;
+  let positionFrame;
+  let renderedBaseWidth = BASE_WIDTH;
+
+  function stateFromRect(rect) {
+    const scale = rect.width / BASE_WIDTH;
+    return {
+      x: rect.left - (SUBJECT_CENTER_X - BASE_WIDTH / 2) * scale,
+      y: rect.top - (SUBJECT_CENTER_Y - BASE_HEIGHT / 2) * scale,
+      width: rect.width,
+      opacity: 1,
+      rotation: 0,
+    };
+  }
 
   function stateFromSlot(slot) {
-    const rect = slot.getBoundingClientRect();
-    return { x: rect.left, y: rect.top, width: rect.width, opacity: 1, rotation: 0 };
+    return stateFromRect(slot.getBoundingClientRect());
   }
 
   function stateFromTransitionSlot() {
     const rect = transitionCornSlot.getBoundingClientRect();
+    const state = stateFromRect(rect);
     const stickyRect = transitionSticky.getBoundingClientRect();
     const headerClearance = (header?.getBoundingClientRect().bottom ?? 0) + 8;
     return {
-      x: rect.left,
-      y: Math.max(rect.top - stickyRect.top, headerClearance),
-      width: rect.width,
+      ...state,
+      y: Math.max(state.y - stickyRect.top, headerClearance),
       opacity: 0.94,
-      rotation: 0,
     };
+  }
+
+  function resizeStateAroundCenter(state, factor) {
+    const widthDelta = state.width * (factor - 1);
+    state.x -= widthDelta / 2;
+    state.y -= widthDelta * (BASE_HEIGHT / BASE_WIDTH) / 2;
+    state.width += widthDelta;
   }
 
   function mixStates(from, to, progress) {
@@ -185,14 +207,19 @@ if (!prefersReducedMotion && scrollCorn && heroCornSlot && storyCornSlot && tran
   }
 
   function applyCornState(state) {
-    const scale = state.width / BASE_WIDTH;
+    const sourceToRenderedScale = renderedBaseWidth / BASE_WIDTH;
+    const renderedSubjectX = SUBJECT_CENTER_X * sourceToRenderedScale;
+    const renderedSubjectY = SUBJECT_CENTER_Y * sourceToRenderedScale;
+    const scale = state.width / renderedBaseWidth;
+    const centerX = state.x + renderedSubjectX * scale;
+    const centerY = state.y + renderedSubjectY * scale;
     scrollCorn.style.opacity = String(clamp(state.opacity));
-    scrollCorn.style.transform = `translate3d(${state.x}px, ${state.y}px, 0) rotate(${state.rotation}deg) scale(${scale})`;
+    scrollCorn.style.transform = `translate3d(${centerX}px, ${centerY}px, 0) rotate(${state.rotation}deg) scale(${scale}) translate3d(${-renderedSubjectX}px, ${-renderedSubjectY}px, 0)`;
   }
 
   function animateCorn() {
     animationFrame = undefined;
-    const easing = prefersReducedMotion ? 1 : 0.14;
+    const easing = 0.16;
     currentState = {
       x: lerp(currentState.x, targetState.x, easing),
       y: lerp(currentState.y, targetState.y, easing),
@@ -216,7 +243,7 @@ if (!prefersReducedMotion && scrollCorn && heroCornSlot && storyCornSlot && tran
     const transitionRect = transitionSection.getBoundingClientRect();
     const storyTotal = Math.max(1, corn360Section.offsetHeight - viewportHeight);
     const storyProgress = clamp(-storyRect.top / storyTotal);
-    const storyArrival = smoothstep((viewportHeight * 0.88 - storyRect.top) / (viewportHeight * 0.88));
+    const storyArrival = smoothstep((viewportHeight * 0.72 - storyRect.top) / (viewportHeight * 0.54));
     const storyDeparture = smoothstep((storyProgress - 0.8) / 0.17);
     const viewportTransitionArrival = smoothstep((viewportHeight - transitionRect.top) / viewportHeight);
     const transitionArrival = Math.max(storyDeparture, viewportTransitionArrival);
@@ -230,13 +257,24 @@ if (!prefersReducedMotion && scrollCorn && heroCornSlot && storyCornSlot && tran
 
     const heroState = stateFromSlot(heroCornSlot);
     const storyState = stateFromSlot(storyCornSlot);
-    storyState.rotation = prefersReducedMotion ? 0 : Math.sin(storyProgress * Math.PI * 2) * 2.2;
+    const motionEnvelope = smoothstep(rangeProgress(storyProgress, 0.04, 0.14))
+      * (1 - smoothstep(rangeProgress(storyProgress, 0.84, 0.96)));
+    const swayPhase = Math.sin(storyProgress * Math.PI * 4);
+    const swayDistance = Math.min(34, window.innerWidth * 0.028);
+    const pulse = 1 + Math.sin(storyProgress * Math.PI * 8) * .03 * motionEnvelope;
+    storyState.x += swayPhase * swayDistance * motionEnvelope;
+    storyState.y += Math.sin(storyProgress * Math.PI * 8) * 10 * motionEnvelope;
+    storyState.rotation = swayPhase * 5.5 * motionEnvelope;
+    resizeStateAroundCenter(storyState, pulse);
     let nextState = mixStates(heroState, storyState, storyArrival);
 
     if (transitionArrival > 0) {
       const transitionState = stateFromTransitionSlot();
+      const transitionMotion = 1 - fieldProgress;
       transitionState.opacity = 0.94 * (1 - fieldProgress);
-      transitionState.rotation = prefersReducedMotion ? 0 : Math.sin(transitionProgress * Math.PI) * -1.6;
+      transitionState.x += Math.sin(transitionProgress * Math.PI * 2) * 14 * transitionMotion;
+      transitionState.y -= Math.sin(transitionProgress * Math.PI) * 12 * transitionMotion;
+      transitionState.rotation = Math.sin(transitionProgress * Math.PI * 2) * -3.2 * transitionMotion;
       nextState = mixStates(nextState, transitionState, transitionArrival);
     }
 
@@ -246,18 +284,43 @@ if (!prefersReducedMotion && scrollCorn && heroCornSlot && storyCornSlot && tran
   }
 
   function updateCornPosition() {
-    targetState = calculateCornTarget();
-    if (!currentState) {
-      currentState = { ...targetState };
-      applyCornState(currentState);
-      scrollCorn.classList.add("is-ready");
-    }
-    if (!animationFrame) animationFrame = requestAnimationFrame(animateCorn);
+    if (positionFrame) return;
+    positionFrame = requestAnimationFrame(() => {
+      positionFrame = undefined;
+      targetState = calculateCornTarget();
+      if (!currentState) {
+        currentState = {
+          ...targetState,
+          opacity: 0,
+          rotation: -2.5,
+        };
+        resizeStateAroundCenter(currentState, .95);
+        applyCornState(currentState);
+        scrollCorn.classList.add("is-ready");
+      }
+      if (!animationFrame) animationFrame = requestAnimationFrame(animateCorn);
+    });
+  }
+
+  function handleCornResize() {
+    renderedBaseWidth = Math.min(BASE_WIDTH, document.documentElement.clientWidth);
+    updateCornPosition();
+  }
+
+  function handleHeroRevealEnd(event) {
+    if (event.propertyName !== "transform") return;
+    heroVisual?.removeEventListener("transitionend", handleHeroRevealEnd);
+    updateCornPosition();
   }
 
   document.body.append(scrollCorn);
+  renderedBaseWidth = Math.min(BASE_WIDTH, document.documentElement.clientWidth);
   window.addEventListener("scroll", updateCornPosition, { passive: true });
-  window.addEventListener("resize", updateCornPosition);
+  window.addEventListener("resize", handleCornResize);
+  window.addEventListener("load", updateCornPosition, { once: true });
+  document.fonts?.ready.then(updateCornPosition);
+  heroVisual?.addEventListener("transitionend", handleHeroRevealEnd);
+  window.setTimeout(updateCornPosition, 760);
   updateCornPosition();
 }
 

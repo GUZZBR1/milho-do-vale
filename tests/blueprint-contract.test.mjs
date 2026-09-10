@@ -112,3 +112,35 @@ test("mantém uma composição estática limpa quando o sistema reduz movimento"
   assert.match(css, /\.transition-copy, \.transition-origin-line, \.corn-slot-transition\s*\{\s*display:\s*none/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.transition-origin-copy\s*\{[^}]*position:\s*absolute/);
 });
+
+test("centraliza a parte visível da espiga dentro de um cartão proporcional", () => {
+  assert.match(css, /\.hero-visual\s*\{[^}]*aspect-ratio:\s*1\s*\/\s*1/);
+  assert.match(css, /html, body\s*\{\s*overflow-x:\s*hidden/);
+  assert.match(css, /\.scroll-corn\s*\{[^}]*max-width:\s*100%/);
+  assert.match(script, /const SUBJECT_CENTER_X = 294/);
+  assert.match(script, /const SUBJECT_CENTER_Y = 374\.5/);
+  assert.match(script, /rect\.left - \(SUBJECT_CENTER_X - BASE_WIDTH \/ 2\) \* scale/);
+  assert.match(script, /rect\.top - \(SUBJECT_CENTER_Y - BASE_HEIGHT \/ 2\) \* scale/);
+  assert.match(script, /const centerX = state\.x \+ renderedSubjectX \* scale/);
+  assert.match(script, /translate3d\(\$\{centerX\}px, \$\{centerY\}px, 0\)[\s\S]*translate3d\(\$\{-renderedSubjectX\}px/);
+  assert.match(script, /renderedBaseWidth = Math\.min\(BASE_WIDTH, document\.documentElement\.clientWidth\)/);
+  assert.match(script, /resizeStateAroundCenter\(currentState, \.95\)/);
+  assert.doesNotMatch(script, /y:\s*targetState\.y \+ 28/);
+  assert.match(script, /const storyArrival = smoothstep\(\(viewportHeight \* 0\.72 - storyRect\.top\) \/ \(viewportHeight \* 0\.54\)\)/);
+  assert.match(script, /document\.fonts\?\.ready\.then\(updateCornPosition\)/);
+  assert.match(script, /window\.addEventListener\("load", updateCornPosition, \{ once: true \}\)/);
+  assert.match(script, /if \(event\.propertyName !== "transform"\) return/);
+  assert.match(script, /heroVisual\?\.addEventListener\("transitionend", handleHeroRevealEnd\)/);
+});
+
+test("torna a narrativa da espiga mais expressiva sem adicionar mídia pesada", () => {
+  assert.match(script, /const swayPhase = Math\.sin\(storyProgress \* Math\.PI \* 4\)/);
+  assert.match(script, /storyState\.rotation = swayPhase \* 5\.5 \* motionEnvelope/);
+  assert.match(script, /const pulse = 1 \+ Math\.sin\(storyProgress \* Math\.PI \* 8\) \* \.03 \* motionEnvelope/);
+  assert.match(script, /if \(positionFrame\) return/);
+  assert.match(css, /\.corn360-message\s*\{[^}]*cubic-bezier\(\.2, \.8, \.2, 1\)/);
+  assert.doesNotMatch(script, /setInterval|canvas|getContext/);
+  assert.match(html, /href="styles\.css\?v=corn-motion-1"/);
+  assert.match(html, /src="script\.js\?v=corn-motion-1"/);
+  assert.match(script, /window\.setTimeout\(updateCornPosition, 760\)/);
+});

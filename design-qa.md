@@ -38,7 +38,7 @@
 - Menu mobile abriu pelo botão e fechou com Escape; estado `aria-expanded` foi atualizado corretamente.
 - Navegação por âncora e scroll foram exercitados no hero, `#milho`, transição e início de Produção.
 - Console local e publicado: nenhum erro ou warning registrado.
-- Testes estáticos: 8/8 aprovados.
+- Testes estáticos: 10/10 aprovados.
 
 ## Histórico de iterações
 
@@ -51,6 +51,10 @@
 7. A validação desktop mostrou que o crescimento na transição ainda podia invadir o cabeçalho. A espiga passou a preservar escala constante nessa etapa, com folga explícita abaixo do header; o crossfade mantém a saída suave sem competir com a copy.
 8. O ritmo final foi redistribuído conforme as novas referências: a última mensagem permanece com a espiga até a transição, o campo começa seu fade após 10% do trecho e a seção passou de 340vh para 440vh. No viewport mobile de 912 px, “É aqui que tudo começa” ocupa 1.178 px de scroll (682 px em opacidade plena) e “Direto do Vale do Paraíba” permanece pleno por 744 px.
 9. A reprodução com `prefers-reduced-motion: reduce` confirmou a causa da sobreposição vista em outro computador: o fallback exibia os três textos da transição ao mesmo tempo enquanto o JavaScript ainda movia a espiga. Nesse modo, a espiga agora permanece no hero, os quatro benefícios formam uma grade estática e a transição mostra apenas a composição final “Direto do Vale do Paraíba”.
+10. A nova comparação usou `C:/Users/gusta/AppData/Local/Temp/codex-clipboard-15b5ef8f-c858-4786-968a-04f89a1d0c5b.png` e `C:/Users/gusta/AppData/Local/Temp/codex-clipboard-c7dc6ee5-6b9a-42e2-b019-f7229dd1844d.png` como verdade visual. A implementação foi renderizada no navegador interno pelo quadro `/.omx/state/corn-motion/comparison.html`, com iframes de 1341 × 835 e 1680 × 829 CSS px, densidade 1, e comparada no mesmo quadro.
+11. A primeira rodada encontrou um cartão sem proporção explícita, centro baseado no canvas transparente e overflow horizontal. O cartão passou a ser quadrado, a posição usa o centro alfa medido do PNG e a imagem-base ficou limitada ao viewport.
+12. A segunda rodada identificou um desvio vertical de 18 px causado pelo `reveal` do próprio cartão. A posição agora é recalculada após fontes, carregamento e fim da transição; a medição pós-fix registrou delta de 0,00002 px no eixo X e 0,413 px no eixo Y.
+13. A narrativa ganhou oscilação lateral alinhada aos quatro blocos de mensagem, inclinação de até 5,5°, pulso de escala de 3%, leve flutuação vertical e uma saída mais orgânica para o campo. Todas as mudanças usam apenas `transform` e `opacity`, são agrupadas por `requestAnimationFrame` e não criam novos assets.
 
 ## Findings
 
@@ -67,5 +71,6 @@
 - Cache: o PNG ganhou um novo nome para impedir que computadores que acessaram a versão antiga reutilizem o arquivo de 2 MB por até 24 horas.
 - Validação local: PNG 512 × 768 carregado, campo carregado antes da transição, animação preservada e nenhum erro ou warning no console.
 - Validação de acessibilidade: navegador automatizado com movimento reduzido confirmou `#scroll-corn` dentro do slot do hero, letreiro intermediário oculto e somente a composição final da origem visível.
+- Peso após a rodada de movimento: aproximadamente 1,38 MB no build; o PNG permanece com 582.097 bytes. O acréscimo é apenas código textual e não adiciona requests de mídia, bibliotecas ou sequências de frames.
 
 final result: passed
