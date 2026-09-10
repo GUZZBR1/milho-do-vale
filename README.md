@@ -9,7 +9,7 @@ A primeira colheita está prevista para **fevereiro de 2027**, então a página 
 - `index.html` — estrutura semântica da página, seguindo o blueprint em `Milho_do_Vale_Landing_Page_Blueprint_V1.docx`.
 - `styles.css` — identidade visual (tokens Forest/Corn/Cream/Earth), responsividade e animações.
 - `script.js` — menu mobile, movimento contínuo da espiga guiado por scroll, timeline animada, transição produto → campo e CTA do WhatsApp.
-- `assets/corn-transition.png` — única espiga PNG renderizada na página. O mesmo elemento percorre o hero, a seção “O milho” e a transição para o campo, interpolando posição, escala, inclinação e opacidade.
+- `assets/corn-transition-optimized.png` — única espiga PNG renderizada na página, otimizada para 512 × 768 px. O mesmo elemento percorre o hero, a seção “O milho” e a transição para o campo, interpolando posição, escala, inclinação e opacidade.
 - `assets/corn-360/frame-00.webp` … `frame-23.webp` — sequência legada preservada como material de origem; não é carregada pela experiência atual.
 - `assets/field/origin-field.webp` — fotografia panorâmica otimizada usada no crossfade produto → campo. A foto fica fixa até o fim do bloco de scroll: só o letreiro troca em crossfade, de "É aqui que tudo começa" para o texto da origem, sem repetir a imagem.
 - `assets/journey/*.webp` — seis fotografias documentais otimizadas para Preparo, Plantio, Cultivo, Colheita, Seleção e Entrega.
@@ -27,6 +27,13 @@ Para executar a checagem automatizada sem instalar dependências:
 ```bash
 node --test tests/blueprint-contract.test.mjs
 ```
+
+## Desempenho
+
+- A espiga principal usa um PNG RGBA de 512 × 768 px e menos de 600 KB.
+- O build exclui fontes de imagem e frames que não são usados pela página publicada.
+- As fotos da jornada continuam com carregamento adiado; a foto do campo é antecipada em baixa prioridade para não deixar a transição vazia.
+- Elementos abaixo da dobra usam `content-visibility`, e os efeitos ligados ao scroll evitam filtros pesados e consultas DOM repetidas.
 
 ## Pendências do blueprint (fora do escopo desta implementação)
 

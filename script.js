@@ -76,9 +76,17 @@ if (instagramLink) {
 }
 
 const header = document.querySelector("#site-header");
-window.addEventListener("scroll", () => {
-  header?.classList.toggle("is-scrolled", window.scrollY > 8);
-}, { passive: true });
+let headerTicking = false;
+function updateHeader() {
+  if (headerTicking) return;
+  headerTicking = true;
+  requestAnimationFrame(() => {
+    header?.classList.toggle("is-scrolled", window.scrollY > 8);
+    headerTicking = false;
+  });
+}
+window.addEventListener("scroll", updateHeader, { passive: true });
+updateHeader();
 
 const revealElements = document.querySelectorAll(".reveal");
 
@@ -123,6 +131,8 @@ const TRANSITION_TIMING = Object.freeze({
 
 const corn360Section = document.querySelector(".corn360-sticky");
 const transitionSection = document.querySelector(".transition-section");
+const transitionSticky = transitionSection?.querySelector(".transition-sticky");
+const transitionCopy = transitionSection?.querySelector(".transition-copy");
 const scrollCorn = document.querySelector("#scroll-corn");
 const heroCornSlot = document.querySelector('[data-corn-slot="hero"]');
 const storyCornSlot = document.querySelector('[data-corn-slot="story"]');
@@ -152,7 +162,7 @@ if (scrollCorn && heroCornSlot && storyCornSlot && transitionCornSlot && corn360
 
   function stateFromTransitionSlot() {
     const rect = transitionCornSlot.getBoundingClientRect();
-    const stickyRect = transitionCornSlot.closest(".transition-sticky").getBoundingClientRect();
+    const stickyRect = transitionSticky.getBoundingClientRect();
     const headerClearance = (header?.getBoundingClientRect().bottom ?? 0) + 8;
     return {
       x: rect.left,
@@ -283,7 +293,7 @@ if (transitionSection) {
           fieldImg.style.opacity = String(fieldProgress);
           fieldImg.style.transform = `scale(${1.05 - fieldProgress * 0.05})`;
         }
-        transitionSection.querySelector(".transition-sticky")?.classList.toggle("has-field", fieldProgress > 0.05);
+        transitionSticky?.classList.toggle("has-field", fieldProgress > 0.05);
         const originLineOpacity = smoothstep(rangeProgress(
           progress,
           TRANSITION_TIMING.originLineFadeInStart,
@@ -311,7 +321,7 @@ if (transitionSection) {
           TRANSITION_TIMING.introFadeStart,
           TRANSITION_TIMING.introFadeEnd,
         ));
-        transitionSection.querySelector(".transition-copy")?.style.setProperty("opacity", String(introOpacity));
+        transitionCopy?.style.setProperty("opacity", String(introOpacity));
         ticking = false;
       });
     };

@@ -30,7 +30,7 @@
 - Fonts and typography: Playfair Display e DM Sans preservadas, com pesos, quebras e hierarquia compatíveis com a referência.
 - Spacing and layout rhythm: slots do hero, narrativa e transição medidos pela própria responsividade; sem overflow horizontal ou recortes indevidos no viewport validado.
 - Colors and visual tokens: tokens Forest, Deep Forest, Corn, Cream, Warm White, Earth e Ink preservados.
-- Image quality and asset fidelity: um único PNG 1024 × 1536 é reutilizado, sem placeholders, desenho CSS ou troca por frames WebP; sombra e proporção permanecem consistentes.
+- Image quality and asset fidelity: um único PNG 512 × 768 é reutilizado, sem placeholders, desenho CSS ou troca por frames WebP; proporção e nitidez permanecem consistentes no tamanho exibido.
 - Copy and content: copy comercial e mensagens narrativas preservadas; a dica foi atualizada de “role para girar” para “role para acompanhar”.
 
 ## Interações e erros
@@ -38,7 +38,7 @@
 - Menu mobile abriu pelo botão e fechou com Escape; estado `aria-expanded` foi atualizado corretamente.
 - Navegação por âncora e scroll foram exercitados no hero, `#milho`, transição e início de Produção.
 - Console local e publicado: nenhum erro ou warning registrado.
-- Testes estáticos: 5/5 aprovados.
+- Testes estáticos: 7/7 aprovados.
 
 ## Histórico de iterações
 
@@ -55,5 +55,15 @@
 
 - Nenhum P0, P1 ou P2 restante.
 - P3: em telas extremamente baixas, vale validar futuramente se a duração da seção narrativa parece longa; não afeta o viewport atual nem a continuidade solicitada.
+
+## Performance QA
+
+- Diagnóstico da publicação anterior: `corn-transition.png` tinha 2.040.673 bytes e o build incluía `logo-source.png`, com aproximadamente 2,02 MB, apesar de esse arquivo não aparecer na página.
+- Build otimizado: 1.375.291 bytes no total, contra aproximadamente 4,79 MB antes — redução próxima de 71%.
+- PNG animado: passou de 1024 × 1536 para 512 × 768 px e 582.097 bytes, reduzindo transferência, decodificação e memória de textura sem alterar a composição visível.
+- Renderização: removidos `drop-shadow` do elemento em movimento e `backdrop-filter` do cabeçalho; consultas da transição foram cacheadas e atualizações do cabeçalho passaram a ser agrupadas por frame.
+- Conteúdo fora da tela: etapas da jornada usam `content-visibility: auto`; suas seis fotos continuam lazy. A imagem de campo, com cerca de 86 KB, é carregada antecipadamente em baixa prioridade para estar pronta na transição.
+- Cache: o PNG ganhou um novo nome para impedir que computadores que acessaram a versão antiga reutilizem o arquivo de 2 MB por até 24 horas.
+- Validação local: PNG 512 × 768 carregado, campo carregado antes da transição, animação preservada e nenhum erro ou warning no console.
 
 final result: passed

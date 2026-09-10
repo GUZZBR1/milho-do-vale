@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
-    <link rel="preload" as="image" href="assets/corn-transition.png" />
+    <link rel="preload" as="image" href="assets/corn-transition-optimized.png" />
   </head>
   <body>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -54,7 +54,7 @@
         <div class="hero-visual reveal reveal-delay">
           <div class="sun-glow"></div>
           <span class="corn-slot corn-slot-hero" data-corn-slot="hero">
-            <img id="scroll-corn" class="scroll-corn" src="assets/corn-transition.png" alt="Espiga de milho verde com grãos amarelos e palha fresca" width="1024" height="1536" decoding="async" draggable="false" />
+            <img id="scroll-corn" class="scroll-corn" src="assets/corn-transition-optimized.png" alt="Espiga de milho verde com grãos amarelos e palha fresca" width="512" height="768" decoding="async" fetchpriority="high" draggable="false" />
           </span>
         </div>
       </section>
@@ -78,7 +78,7 @@
       <section class="transition-section">
         <div class="transition-sticky">
           <span class="corn-slot corn-slot-transition" data-corn-slot="transition" aria-hidden="true"></span>
-          <img class="transition-field" src="assets/field/origin-field.webp" alt="Plantação de milho verde no Vale do Paraíba ao amanhecer" loading="lazy" decoding="async" />
+          <img class="transition-field" src="assets/field/origin-field.webp" alt="Plantação de milho verde no Vale do Paraíba ao amanhecer" loading="eager" fetchpriority="low" decoding="async" />
           <div class="transition-copy">
             <p class="transition-line line-1">MAS O QUE FAZ ESSE MILHO DIFERENTE...</p>
             <p class="transition-line line-2"><em>COMEÇA MUITO ANTES DA COLHEITA.</em></p>

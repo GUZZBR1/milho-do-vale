@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const outputRoot = join(projectRoot, "dist");
 const vercelOutputRoot = join(projectRoot, ".vercel", "output");
+const excludedAssets = [join("assets", "corn-360"), join("assets", "logo-source.png")];
 
 rmSync(outputRoot, { force: true, recursive: true });
 mkdirSync(outputRoot, { recursive: true });
@@ -14,7 +15,7 @@ for (const filename of ["index.html", "styles.css", "script.js"]) {
 }
 
 cpSync(join(projectRoot, "assets"), join(outputRoot, "assets"), {
-  filter: (source) => !source.includes(`${join("assets", "corn-360")}`),
+  filter: (source) => !excludedAssets.some((excluded) => source.includes(excluded)),
   recursive: true,
 });
 
