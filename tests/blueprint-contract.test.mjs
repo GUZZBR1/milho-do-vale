@@ -115,7 +115,10 @@ test("mantém uma composição estática limpa quando o sistema reduz movimento"
 
 test("centraliza a parte visível da espiga dentro de um cartão proporcional", () => {
   assert.match(css, /\.hero-visual\s*\{[^}]*aspect-ratio:\s*1\s*\/\s*1/);
-  assert.match(css, /html, body\s*\{\s*overflow-x:\s*hidden/);
+  assert.match(css, /html, body\s*\{\s*overflow-x:\s*clip/);
+  assert.doesNotMatch(css, /html, body\s*\{\s*overflow-x:\s*hidden/);
+  assert.match(css, /\.corn360-stage\s*\{[^}]*position:\s*sticky/);
+  assert.match(css, /\.transition-sticky\s*\{[^}]*position:\s*sticky/);
   assert.match(css, /\.scroll-corn\s*\{[^}]*max-width:\s*100%/);
   assert.match(script, /const SUBJECT_CENTER_X = 294/);
   assert.match(script, /const SUBJECT_CENTER_Y = 374\.5/);
@@ -140,7 +143,7 @@ test("torna a narrativa da espiga mais expressiva sem adicionar mídia pesada", 
   assert.match(script, /if \(positionFrame\) return/);
   assert.match(css, /\.corn360-message\s*\{[^}]*cubic-bezier\(\.2, \.8, \.2, 1\)/);
   assert.doesNotMatch(script, /setInterval|canvas|getContext/);
-  assert.match(html, /href="styles\.css\?v=corn-motion-1"/);
-  assert.match(html, /src="script\.js\?v=corn-motion-1"/);
+  assert.match(html, /href="styles\.css\?v=corn-motion-2"/);
+  assert.match(html, /src="script\.js\?v=corn-motion-2"/);
   assert.match(script, /window\.setTimeout\(updateCornPosition, 760\)/);
 });

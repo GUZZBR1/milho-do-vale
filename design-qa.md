@@ -7,6 +7,8 @@
   - `C:/Users/gusta/AppData/Local/Temp/codex-clipboard-a35157ee-fc7f-4ec4-9991-44f2f669050a.png` — seção “O milho”, 1446 × 921 px.
   - `C:/Users/gusta/AppData/Local/Temp/codex-clipboard-3e7227ac-bf86-457d-9df5-eb8801865d16.png` — continuidade para a transição, 1083 × 895 px.
 - Implementation screenshot: capturas renderizadas no Codex in-app Browser, tanto no preview local quanto na publicação temporária da Vercel, cobrindo hero, `#milho` e transição.
+- Evidência do bug atual: `C:/Users/gusta/Videos/2026-09-10 16-07-42.mkv`, 17,267 s em 1920 × 1080 e 60 fps; o palco da espiga deixa de ficar fixo e produz um intervalo vazio antes da transição.
+- Captura pós-correção: `.omx/state/video-bug/01-fixed-story.png`, com a entrada e três pontos internos da narrativa renderizados no navegador interno.
 - Viewports validados: mobile 319 × 912 CSS px e desktop 1265 × 712 CSS px, device pixel ratio 1.
 - Estado: movimento normal (`prefers-reduced-motion: false`), menu fechado, scroll no hero, entrada e quadrantes da seção “O milho”, crossfade para o campo e saída para “Produção”.
 - Evidência estrutural no navegador: exatamente um `#scroll-corn`, `src="assets/corn-transition-optimized.png"`, com `position: fixed` durante a experiência normal.
@@ -55,11 +57,12 @@
 11. A primeira rodada encontrou um cartão sem proporção explícita, centro baseado no canvas transparente e overflow horizontal. O cartão passou a ser quadrado, a posição usa o centro alfa medido do PNG e a imagem-base ficou limitada ao viewport.
 12. A segunda rodada identificou um desvio vertical de 18 px causado pelo `reveal` do próprio cartão. A posição agora é recalculada após fontes, carregamento e fim da transição; a medição pós-fix registrou delta de 0,00002 px no eixo X e 0,413 px no eixo Y.
 13. A narrativa ganhou oscilação lateral alinhada aos quatro blocos de mensagem, inclinação de até 5,5°, pulso de escala de 3%, leve flutuação vertical e uma saída mais orgânica para o campo. Todas as mudanças usam apenas `transform` e `opacity`, são agrupadas por `requestAnimationFrame` e não criam novos assets.
+14. O vídeo de 10 de setembro mostrou que `overflow-x: hidden` no documento fazia os palcos `sticky` perderem a fixação em outro Chromium: a espiga grande saía pelo topo, a tela ficava vazia e a versão pequena reaparecia depois. O recorte horizontal passou para `overflow-x: clip`, que não cria um ancestral rolável; a comparação pós-fix manteve a mesma espiga visível em 30%, 55% e 80% da narrativa. CSS e JavaScript receberam a chave de cache `corn-motion-2` para impedir a reutilização da versão defeituosa.
 
 ## Findings
 
 - Nenhum P0, P1 ou P2 restante.
-- P3: em telas extremamente baixas, vale validar futuramente se a duração da seção narrativa parece longa; não afeta o viewport atual nem a continuidade solicitada.
+- P3: falta somente repetir a rolagem em uma máquina física diferente; a regressão foi validada no navegador interno com viewport equivalente e protegida por teste automatizado.
 
 ## Performance QA
 
