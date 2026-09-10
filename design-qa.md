@@ -49,6 +49,7 @@
 5. A segunda rodada encontrou a espiga cortada no fim do sticky e sobreposta ao primeiro título da transição. A saída passou a começar antes do fim da narrativa, e o crescimento foi ancorado pela base no slot real; a captura pós-fix confirmou a espiga centralizada no intervalo e posicionada acima do título.
 6. A publicação revelou que a altura percentual do slot do hero colapsava no desktop. O slot passou a usar uma medida baseada na viewport e ganhou regressão automatizada.
 7. A validação desktop mostrou que o crescimento na transição ainda podia invadir o cabeçalho. A espiga passou a preservar escala constante nessa etapa, com folga explícita abaixo do header; o crossfade mantém a saída suave sem competir com a copy.
+8. O ritmo final foi redistribuído conforme as novas referências: a última mensagem permanece com a espiga até a transição, o campo começa seu fade após 10% do trecho e a seção passou de 340vh para 440vh. No viewport mobile de 912 px, “É aqui que tudo começa” ocupa 1.178 px de scroll (682 px em opacidade plena) e “Direto do Vale do Paraíba” permanece pleno por 744 px.
 
 ## Findings
 

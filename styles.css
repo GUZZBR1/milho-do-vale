@@ -94,7 +94,7 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 }
 
 /* Transition */
-.transition-section { background: #f3f0e7; height: 340vh; position: relative; }
+.transition-section { background: #f3f0e7; height: 440vh; position: relative; }
 .origin-anchor { left: 0; position: absolute; top: 57%; }
 .transition-sticky { align-items: center; display: flex; flex-direction: column; height: 100vh; justify-content: center; isolation: isolate; overflow: hidden; position: sticky; top: 0; }
 .corn-slot-transition { aspect-ratio: 2 / 3; width: min(55vw, 220px); z-index: 2; }

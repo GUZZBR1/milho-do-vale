@@ -104,6 +104,22 @@ const smoothstep = (progress) => {
   const value = clamp(progress);
   return value * value * (3 - 2 * value);
 };
+const rangeProgress = (progress, start, end) => clamp((progress - start) / (end - start));
+
+const TRANSITION_TIMING = Object.freeze({
+  introFirstLineStart: 0.02,
+  introSecondLineStart: 0.08,
+  fieldStart: 0.1,
+  fieldEnd: 0.18,
+  introFadeStart: 0.24,
+  introFadeEnd: 0.32,
+  originLineFadeInStart: 0.3,
+  originLineFadeInEnd: 0.38,
+  originLineFadeOutStart: 0.6,
+  originLineFadeOutEnd: 0.68,
+  originCopyFadeInStart: 0.68,
+  originCopyFadeInEnd: 0.76,
+});
 
 const corn360Section = document.querySelector(".corn360-sticky");
 const transitionSection = document.querySelector(".transition-section");
@@ -117,7 +133,7 @@ const cornHint = document.querySelector(".corn360-hint");
 function updateCornMessage(progress) {
   const quadrant = Math.min(3, Math.floor(clamp(progress) * 4));
   cornMessages.forEach((message) => {
-    const isActive = progress > 0.08 && progress < 0.97 && Number(message.dataset.quadrant) === quadrant;
+    const isActive = progress > 0.08 && Number(message.dataset.quadrant) === quadrant;
     message.classList.toggle("is-active", isActive);
   });
   cornHint?.classList.toggle("is-hidden", progress > 0.08);
@@ -196,7 +212,11 @@ if (scrollCorn && heroCornSlot && storyCornSlot && transitionCornSlot && corn360
     const transitionArrival = Math.max(storyDeparture, viewportTransitionArrival);
     const transitionTotal = Math.max(1, transitionSection.offsetHeight - viewportHeight);
     const transitionProgress = clamp(-transitionRect.top / transitionTotal);
-    const fieldProgress = clamp((transitionProgress - 0.34) / 0.19);
+    const fieldProgress = smoothstep(rangeProgress(
+      transitionProgress,
+      TRANSITION_TIMING.fieldStart,
+      TRANSITION_TIMING.fieldEnd,
+    ));
 
     const heroState = stateFromSlot(heroCornSlot);
     const storyState = stateFromSlot(storyCornSlot);
@@ -252,17 +272,32 @@ if (transitionSection) {
         const total = transitionSection.offsetHeight - window.innerHeight;
         const progress = Math.min(1, Math.max(0, -rect.top / total));
 
-        lines[0]?.classList.toggle("is-visible", progress > 0.09);
-        lines[1]?.classList.toggle("is-visible", progress > 0.28);
-        const fieldProgress = Math.min(1, Math.max(0, (progress - 0.34) / 0.19));
+        lines[0]?.classList.toggle("is-visible", progress > TRANSITION_TIMING.introFirstLineStart);
+        lines[1]?.classList.toggle("is-visible", progress > TRANSITION_TIMING.introSecondLineStart);
+        const fieldProgress = smoothstep(rangeProgress(
+          progress,
+          TRANSITION_TIMING.fieldStart,
+          TRANSITION_TIMING.fieldEnd,
+        ));
         if (fieldImg) {
           fieldImg.style.opacity = String(fieldProgress);
           fieldImg.style.transform = `scale(${1.05 - fieldProgress * 0.05})`;
         }
         transitionSection.querySelector(".transition-sticky")?.classList.toggle("has-field", fieldProgress > 0.05);
-        const originLineOpacity = smoothstep((progress - 0.5) / 0.1)
-          * (1 - smoothstep((progress - 0.67) / 0.09));
-        const originCopyOpacity = smoothstep((progress - 0.8) / 0.11);
+        const originLineOpacity = smoothstep(rangeProgress(
+          progress,
+          TRANSITION_TIMING.originLineFadeInStart,
+          TRANSITION_TIMING.originLineFadeInEnd,
+        )) * (1 - smoothstep(rangeProgress(
+          progress,
+          TRANSITION_TIMING.originLineFadeOutStart,
+          TRANSITION_TIMING.originLineFadeOutEnd,
+        )));
+        const originCopyOpacity = smoothstep(rangeProgress(
+          progress,
+          TRANSITION_TIMING.originCopyFadeInStart,
+          TRANSITION_TIMING.originCopyFadeInEnd,
+        ));
         if (originLine) {
           originLine.style.opacity = String(originLineOpacity);
           originLine.style.transform = `translate(-50%, calc(-50% + ${(1 - originLineOpacity) * 18}px))`;
@@ -271,7 +306,12 @@ if (transitionSection) {
           originCopy.style.opacity = String(originCopyOpacity);
           originCopy.style.transform = `translate(-50%, calc(-50% + ${(1 - originCopyOpacity) * 26}px))`;
         }
-        transitionSection.querySelector(".transition-copy")?.style.setProperty("opacity", String(1 - Math.min(1, Math.max(0, (progress - 0.39) / 0.11))));
+        const introOpacity = 1 - smoothstep(rangeProgress(
+          progress,
+          TRANSITION_TIMING.introFadeStart,
+          TRANSITION_TIMING.introFadeEnd,
+        ));
+        transitionSection.querySelector(".transition-copy")?.style.setProperty("opacity", String(introOpacity));
         ticking = false;
       });
     };

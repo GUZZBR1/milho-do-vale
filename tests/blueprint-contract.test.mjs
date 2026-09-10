@@ -51,6 +51,17 @@ test("implementa crossfade para o campo e seis etapas fotografadas", () => {
   assert.equal((html.match(/loading="lazy"/g) ?? []).length, 7);
 });
 
+test("encurta a espiga isolada e prolonga as cenas fotografadas", () => {
+  assert.match(css, /\.transition-section\s*\{[^}]*height:\s*440vh/);
+  assert.match(script, /fieldStart:\s*0\.1/);
+  assert.match(script, /fieldEnd:\s*0\.18/);
+  assert.match(script, /originLineFadeInStart:\s*0\.3/);
+  assert.match(script, /originLineFadeOutEnd:\s*0\.68/);
+  assert.match(script, /originCopyFadeInStart:\s*0\.68/);
+  assert.match(script, /originCopyFadeInEnd:\s*0\.76/);
+  assert.doesNotMatch(script, /progress\s*<\s*0\.97/);
+});
+
 test("mantém os tokens visuais e fallbacks de acessibilidade", () => {
   for (const token of ["#123d27", "#092a1a", "#e9b832", "#f5f0e4", "#fcfaf5", "#765538", "#172019"]) {
     assert.ok(css.includes(token), `token ausente: ${token}`);
