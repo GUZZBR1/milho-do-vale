@@ -103,3 +103,12 @@ test("mantém o carregamento inicial leve em computadores modestos", async () =>
   assert.match(css, /\.timeline-item\s*\{[^}]*content-visibility:\s*auto/);
   assert.match(buildScript, /logo-source\.png/);
 });
+
+test("mantém uma composição estática limpa quando o sistema reduz movimento", () => {
+  assert.match(script, /if \(!prefersReducedMotion && scrollCorn/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.scroll-corn\s*\{[^}]*position:\s*static/);
+  assert.match(css, /\.corn-slot-story, \.corn360-hint\s*\{\s*display:\s*none/);
+  assert.match(css, /\.corn360-messages\s*\{[^}]*display:\s*grid/);
+  assert.match(css, /\.transition-copy, \.transition-origin-line, \.corn-slot-transition\s*\{\s*display:\s*none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.transition-origin-copy\s*\{[^}]*position:\s*absolute/);
+});

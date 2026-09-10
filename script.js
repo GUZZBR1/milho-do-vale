@@ -149,7 +149,7 @@ function updateCornMessage(progress) {
   cornHint?.classList.toggle("is-hidden", progress > 0.08);
 }
 
-if (scrollCorn && heroCornSlot && storyCornSlot && transitionCornSlot && corn360Section && transitionSection) {
+if (!prefersReducedMotion && scrollCorn && heroCornSlot && storyCornSlot && transitionCornSlot && corn360Section && transitionSection) {
   const BASE_WIDTH = 512;
   let currentState;
   let targetState;
@@ -269,8 +269,6 @@ if (transitionSection) {
   const originCopy = transitionSection.querySelector(".transition-origin-copy");
 
   if (prefersReducedMotion) {
-    lines.forEach((line) => line.classList.add("is-visible"));
-    originLine?.classList.add("is-visible");
     originCopy?.classList.add("is-visible");
   } else {
     let ticking = false;

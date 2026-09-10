@@ -9,7 +9,7 @@
 - Implementation screenshot: capturas renderizadas no Codex in-app Browser, tanto no preview local quanto na publicação temporária da Vercel, cobrindo hero, `#milho` e transição.
 - Viewports validados: mobile 319 × 912 CSS px e desktop 1265 × 712 CSS px, device pixel ratio 1.
 - Estado: movimento normal (`prefers-reduced-motion: false`), menu fechado, scroll no hero, entrada e quadrantes da seção “O milho”, crossfade para o campo e saída para “Produção”.
-- Evidência estrutural no navegador: exatamente um `#scroll-corn`, `src="assets/corn-transition.png"`, com `position: fixed` durante a experiência.
+- Evidência estrutural no navegador: exatamente um `#scroll-corn`, `src="assets/corn-transition-optimized.png"`, com `position: fixed` durante a experiência normal.
 
 ## Comparação visual
 
@@ -38,7 +38,7 @@
 - Menu mobile abriu pelo botão e fechou com Escape; estado `aria-expanded` foi atualizado corretamente.
 - Navegação por âncora e scroll foram exercitados no hero, `#milho`, transição e início de Produção.
 - Console local e publicado: nenhum erro ou warning registrado.
-- Testes estáticos: 7/7 aprovados.
+- Testes estáticos: 8/8 aprovados.
 
 ## Histórico de iterações
 
@@ -50,6 +50,7 @@
 6. A publicação revelou que a altura percentual do slot do hero colapsava no desktop. O slot passou a usar uma medida baseada na viewport e ganhou regressão automatizada.
 7. A validação desktop mostrou que o crescimento na transição ainda podia invadir o cabeçalho. A espiga passou a preservar escala constante nessa etapa, com folga explícita abaixo do header; o crossfade mantém a saída suave sem competir com a copy.
 8. O ritmo final foi redistribuído conforme as novas referências: a última mensagem permanece com a espiga até a transição, o campo começa seu fade após 10% do trecho e a seção passou de 340vh para 440vh. No viewport mobile de 912 px, “É aqui que tudo começa” ocupa 1.178 px de scroll (682 px em opacidade plena) e “Direto do Vale do Paraíba” permanece pleno por 744 px.
+9. A reprodução com `prefers-reduced-motion: reduce` confirmou a causa da sobreposição vista em outro computador: o fallback exibia os três textos da transição ao mesmo tempo enquanto o JavaScript ainda movia a espiga. Nesse modo, a espiga agora permanece no hero, os quatro benefícios formam uma grade estática e a transição mostra apenas a composição final “Direto do Vale do Paraíba”.
 
 ## Findings
 
@@ -65,5 +66,6 @@
 - Conteúdo fora da tela: etapas da jornada usam `content-visibility: auto`; suas seis fotos continuam lazy. A imagem de campo, com cerca de 86 KB, é carregada antecipadamente em baixa prioridade para estar pronta na transição.
 - Cache: o PNG ganhou um novo nome para impedir que computadores que acessaram a versão antiga reutilizem o arquivo de 2 MB por até 24 horas.
 - Validação local: PNG 512 × 768 carregado, campo carregado antes da transição, animação preservada e nenhum erro ou warning no console.
+- Validação de acessibilidade: navegador automatizado com movimento reduzido confirmou `#scroll-corn` dentro do slot do hero, letreiro intermediário oculto e somente a composição final da origem visível.
 
 final result: passed
