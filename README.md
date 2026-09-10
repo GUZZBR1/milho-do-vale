@@ -8,9 +8,9 @@ A primeira colheita está prevista para **fevereiro de 2027**, então a página 
 
 - `index.html` — estrutura semântica da página, seguindo o blueprint em `Milho_do_Vale_Landing_Page_Blueprint_V1.docx`.
 - `styles.css` — identidade visual (tokens Forest/Corn/Cream/Earth), responsividade e animações.
-- `script.js` — menu mobile, rotação 360° por scroll, timeline animada, transição produto → campo e CTA do WhatsApp.
-- `assets/corn-360/frame-00.webp` … `frame-23.webp` — sequência de 24 ângulos (15° cada), convertida dos PNGs individuais 1024×1536 da pasta `milho/Amostra_Espiga_360` no Google Drive para WebP 960×1440. O canvas retorna ao primeiro frame ao concluir exatamente uma volta.
-- `assets/corn-transition.png` — recorte RGBA com fundo transparente usado no hero e na transição da espiga para o campo.
+- `script.js` — menu mobile, movimento contínuo da espiga guiado por scroll, timeline animada, transição produto → campo e CTA do WhatsApp.
+- `assets/corn-transition.png` — única espiga PNG renderizada na página. O mesmo elemento percorre o hero, a seção “O milho” e a transição para o campo, interpolando posição, escala, inclinação e opacidade.
+- `assets/corn-360/frame-00.webp` … `frame-23.webp` — sequência legada preservada como material de origem; não é carregada pela experiência atual.
 - `assets/field/origin-field.webp` — fotografia panorâmica otimizada usada no crossfade produto → campo. A foto fica fixa até o fim do bloco de scroll: só o letreiro troca em crossfade, de "É aqui que tudo começa" para o texto da origem, sem repetir a imagem.
 - `assets/journey/*.webp` — seis fotografias documentais otimizadas para Preparo, Plantio, Cultivo, Colheita, Seleção e Entrega.
 - `assets/logo-source.png` — logo oficial (selo circular) em resolução original, recortada apenas para remover a margem transparente; fonte para reexportar `logo-mark.webp` e os favicons.
@@ -30,8 +30,7 @@ node --test tests/blueprint-contract.test.mjs
 
 ## Pendências do blueprint (fora do escopo desta implementação)
 
-- Os frames individuais disponíveis no Drive ainda são uma amostra gerada de pré-produção, não fotografia real — o blueprint (seção 14) já lista a aprovação do asset definitivo como pendência.
-- A sequência aprovada disponível no Drive possui 24 ângulos. Para chegar aos 48–72 frames recomendados sem duplicação visual, ainda é necessário gerar novos ângulos consistentes a partir da mesma espiga.
+- A espiga PNG disponível ainda é uma amostra gerada de pré-produção, não fotografia real — o blueprint (seção 14) já lista a aprovação do asset definitivo como pendência.
 - As imagens de campo e da jornada são assets de protótipo gerados por IA; devem ser substituídas pelas fotografias reais aprovadas antes da publicação definitiva.
 - Domínio próprio continua pendente de confirmação. WhatsApp (`+55 12 98285-4348`) e Instagram (`@milhodovale.sjc`) já estão configurados.
 

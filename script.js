@@ -97,123 +97,143 @@ if ("IntersectionObserver" in window && !prefersReducedMotion) {
   revealElements.forEach((element) => element.classList.add("is-visible"));
 }
 
-// Corn 360 — scroll-driven frame sequence
-const FRAME_COUNT = 24;
+// One shared PNG follows the reader from the hero to the story and origin.
+const clamp = (value, minimum = 0, maximum = 1) => Math.min(maximum, Math.max(minimum, value));
+const lerp = (start, end, progress) => start + (end - start) * progress;
+const smoothstep = (progress) => {
+  const value = clamp(progress);
+  return value * value * (3 - 2 * value);
+};
+
 const corn360Section = document.querySelector(".corn360-sticky");
-const canvas = document.querySelector("#corn360-canvas");
+const transitionSection = document.querySelector(".transition-section");
+const scrollCorn = document.querySelector("#scroll-corn");
+const heroCornSlot = document.querySelector('[data-corn-slot="hero"]');
+const storyCornSlot = document.querySelector('[data-corn-slot="story"]');
+const transitionCornSlot = document.querySelector('[data-corn-slot="transition"]');
+const cornMessages = document.querySelectorAll(".corn360-message");
+const cornHint = document.querySelector(".corn360-hint");
 
-if (corn360Section && canvas && !prefersReducedMotion) {
-  const ctx = canvas.getContext("2d");
-  const frames = Array(FRAME_COUNT);
-  const loadingFrames = new Map();
-  let currentFrame = 0;
-
-  function loadFrame(index) {
-    if (frames[index]?.complete && frames[index].naturalWidth) return Promise.resolve(frames[index]);
-    if (loadingFrames.has(index)) return loadingFrames.get(index);
-
-    const img = new Image();
-    img.decoding = "async";
-    img.src = `assets/corn-360/frame-${String(index).padStart(2, "0")}.webp`;
-    frames[index] = img;
-
-    const promise = img.decode()
-      .catch(() => new Promise((resolve, reject) => {
-        img.addEventListener("load", resolve, { once: true });
-        img.addEventListener("error", reject, { once: true });
-      }))
-      .then(() => img)
-      .finally(() => loadingFrames.delete(index));
-
-    loadingFrames.set(index, promise);
-    return promise;
-  }
-
-  function drawFrame(index) {
-    const img = frames[index];
-    if (!img || !img.naturalWidth) return;
-    // The Drive sources are already large enough for a sharp high-DPI canvas.
-    // Keep the backing store at the source resolution to avoid needless memory use.
-    const targetWidth = img.naturalWidth;
-    const targetHeight = img.naturalHeight;
-    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
-      canvas.width = targetWidth;
-      canvas.height = targetHeight;
-    }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    currentFrame = index;
-  }
-
-  function drawWhenReady(index) {
-    if (frames[index]?.naturalWidth) {
-      drawFrame(index);
-      return;
-    }
-
-    loadFrame(index).then(() => drawFrame(index)).catch(() => {
-      canvas.hidden = true;
-      document.querySelector("#corn360-fallback")?.removeAttribute("hidden");
-    });
-  }
-
-  const keyFrames = [0, 6, 12, 18, 23];
-  loadFrame(0).then(() => {
-    drawFrame(0);
-    return Promise.all(keyFrames.slice(1).map(loadFrame));
-  }).then(() => {
-    const loadRemaining = () => {
-      for (let index = 0; index < FRAME_COUNT; index += 1) loadFrame(index).catch(() => {});
-    };
-    if ("requestIdleCallback" in window) window.requestIdleCallback(loadRemaining, { timeout: 1800 });
-    else window.setTimeout(loadRemaining, 300);
-  }).catch(() => {
-    canvas.hidden = true;
-    document.querySelector("#corn360-fallback")?.removeAttribute("hidden");
+function updateCornMessage(progress) {
+  const quadrant = Math.min(3, Math.floor(clamp(progress) * 4));
+  cornMessages.forEach((message) => {
+    const isActive = progress > 0.08 && progress < 0.97 && Number(message.dataset.quadrant) === quadrant;
+    message.classList.toggle("is-active", isActive);
   });
-
-  const messages = document.querySelectorAll(".corn360-message");
-
-  function updateQuadrant(progress) {
-    const quadrant = Math.min(3, Math.floor(progress * 4));
-    messages.forEach((message) => {
-      const isActive = progress < 0.97 && Number(message.dataset.quadrant) === quadrant;
-      message.classList.toggle("is-active", isActive);
-    });
-  }
-
-  let ticking = false;
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const rect = corn360Section.getBoundingClientRect();
-      const total = corn360Section.offsetHeight - window.innerHeight;
-      const scrolled = -rect.top;
-      const progress = Math.min(1, Math.max(0, scrolled / total));
-
-      // At 100%, step 24 wraps to frame 0 and completes exactly one turn.
-      const frameIndex = Math.round(progress * FRAME_COUNT) % FRAME_COUNT;
-      if (frameIndex !== currentFrame) drawWhenReady(frameIndex);
-      updateQuadrant(progress);
-      ticking = false;
-    });
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", () => drawFrame(currentFrame));
-  onScroll();
-} else if (canvas) {
-  canvas.hidden = true;
-  document.querySelector("#corn360-fallback")?.removeAttribute("hidden");
+  cornHint?.classList.toggle("is-hidden", progress > 0.08);
 }
 
-// Transition section — fade in copy lines and grow the corn as it enters view
-const transitionSection = document.querySelector(".transition-section");
+if (scrollCorn && heroCornSlot && storyCornSlot && transitionCornSlot && corn360Section && transitionSection) {
+  const BASE_WIDTH = 512;
+  let currentState;
+  let targetState;
+  let animationFrame;
+
+  function stateFromSlot(slot) {
+    const rect = slot.getBoundingClientRect();
+    return { x: rect.left, y: rect.top, width: rect.width, opacity: 1, rotation: 0 };
+  }
+
+  function stateFromTransitionSlot() {
+    const rect = transitionCornSlot.getBoundingClientRect();
+    const stickyRect = transitionCornSlot.closest(".transition-sticky").getBoundingClientRect();
+    const headerClearance = (header?.getBoundingClientRect().bottom ?? 0) + 8;
+    return {
+      x: rect.left,
+      y: Math.max(rect.top - stickyRect.top, headerClearance),
+      width: rect.width,
+      opacity: 0.94,
+      rotation: 0,
+    };
+  }
+
+  function mixStates(from, to, progress) {
+    const eased = smoothstep(progress);
+    return {
+      x: lerp(from.x, to.x, eased),
+      y: lerp(from.y, to.y, eased),
+      width: lerp(from.width, to.width, eased),
+      opacity: lerp(from.opacity, to.opacity, eased),
+      rotation: lerp(from.rotation, to.rotation, eased),
+    };
+  }
+
+  function applyCornState(state) {
+    const scale = state.width / BASE_WIDTH;
+    scrollCorn.style.opacity = String(clamp(state.opacity));
+    scrollCorn.style.transform = `translate3d(${state.x}px, ${state.y}px, 0) rotate(${state.rotation}deg) scale(${scale})`;
+  }
+
+  function animateCorn() {
+    animationFrame = undefined;
+    const easing = prefersReducedMotion ? 1 : 0.14;
+    currentState = {
+      x: lerp(currentState.x, targetState.x, easing),
+      y: lerp(currentState.y, targetState.y, easing),
+      width: lerp(currentState.width, targetState.width, easing),
+      opacity: lerp(currentState.opacity, targetState.opacity, easing),
+      rotation: lerp(currentState.rotation, targetState.rotation, easing),
+    };
+    applyCornState(currentState);
+
+    const remaining = Math.abs(currentState.x - targetState.x)
+      + Math.abs(currentState.y - targetState.y)
+      + Math.abs(currentState.width - targetState.width)
+      + Math.abs(currentState.opacity - targetState.opacity) * 100
+      + Math.abs(currentState.rotation - targetState.rotation);
+    if (remaining > 0.12) animationFrame = requestAnimationFrame(animateCorn);
+  }
+
+  function calculateCornTarget() {
+    const viewportHeight = window.innerHeight;
+    const storyRect = corn360Section.getBoundingClientRect();
+    const transitionRect = transitionSection.getBoundingClientRect();
+    const storyTotal = Math.max(1, corn360Section.offsetHeight - viewportHeight);
+    const storyProgress = clamp(-storyRect.top / storyTotal);
+    const storyArrival = smoothstep((viewportHeight * 0.88 - storyRect.top) / (viewportHeight * 0.88));
+    const storyDeparture = smoothstep((storyProgress - 0.8) / 0.17);
+    const viewportTransitionArrival = smoothstep((viewportHeight - transitionRect.top) / viewportHeight);
+    const transitionArrival = Math.max(storyDeparture, viewportTransitionArrival);
+    const transitionTotal = Math.max(1, transitionSection.offsetHeight - viewportHeight);
+    const transitionProgress = clamp(-transitionRect.top / transitionTotal);
+    const fieldProgress = clamp((transitionProgress - 0.34) / 0.19);
+
+    const heroState = stateFromSlot(heroCornSlot);
+    const storyState = stateFromSlot(storyCornSlot);
+    storyState.rotation = prefersReducedMotion ? 0 : Math.sin(storyProgress * Math.PI * 2) * 2.2;
+    let nextState = mixStates(heroState, storyState, storyArrival);
+
+    if (transitionArrival > 0) {
+      const transitionState = stateFromTransitionSlot();
+      transitionState.opacity = 0.94 * (1 - fieldProgress);
+      transitionState.rotation = prefersReducedMotion ? 0 : Math.sin(transitionProgress * Math.PI) * -1.6;
+      nextState = mixStates(nextState, transitionState, transitionArrival);
+    }
+
+    if (transitionRect.bottom < 0) nextState.opacity = 0;
+    updateCornMessage(storyProgress);
+    return nextState;
+  }
+
+  function updateCornPosition() {
+    targetState = calculateCornTarget();
+    if (!currentState) {
+      currentState = { ...targetState };
+      applyCornState(currentState);
+      scrollCorn.classList.add("is-ready");
+    }
+    if (!animationFrame) animationFrame = requestAnimationFrame(animateCorn);
+  }
+
+  document.body.append(scrollCorn);
+  window.addEventListener("scroll", updateCornPosition, { passive: true });
+  window.addEventListener("resize", updateCornPosition);
+  updateCornPosition();
+}
+
+// Transition section — fade in copy lines and hand the scene over to the field.
 if (transitionSection) {
   const lines = transitionSection.querySelectorAll(".transition-line");
-  const cornImg = transitionSection.querySelector(".transition-corn");
   const fieldImg = transitionSection.querySelector(".transition-field");
   const originLine = transitionSection.querySelector(".transition-origin-line");
   const originCopy = transitionSection.querySelector(".transition-origin-copy");
@@ -235,17 +255,22 @@ if (transitionSection) {
         lines[0]?.classList.toggle("is-visible", progress > 0.09);
         lines[1]?.classList.toggle("is-visible", progress > 0.28);
         const fieldProgress = Math.min(1, Math.max(0, (progress - 0.34) / 0.19));
-        if (cornImg) {
-          cornImg.style.transform = `scale(${1 + progress * 0.88})`;
-          cornImg.style.opacity = String(0.9 * (1 - fieldProgress));
-        }
         if (fieldImg) {
           fieldImg.style.opacity = String(fieldProgress);
           fieldImg.style.transform = `scale(${1.05 - fieldProgress * 0.05})`;
         }
         transitionSection.querySelector(".transition-sticky")?.classList.toggle("has-field", fieldProgress > 0.05);
-        originLine?.classList.toggle("is-visible", progress > 0.51 && progress < 0.76);
-        originCopy?.classList.toggle("is-visible", progress > 0.76);
+        const originLineOpacity = smoothstep((progress - 0.5) / 0.1)
+          * (1 - smoothstep((progress - 0.67) / 0.09));
+        const originCopyOpacity = smoothstep((progress - 0.8) / 0.11);
+        if (originLine) {
+          originLine.style.opacity = String(originLineOpacity);
+          originLine.style.transform = `translate(-50%, calc(-50% + ${(1 - originLineOpacity) * 18}px))`;
+        }
+        if (originCopy) {
+          originCopy.style.opacity = String(originCopyOpacity);
+          originCopy.style.transform = `translate(-50%, calc(-50% + ${(1 - originCopyOpacity) * 26}px))`;
+        }
         transitionSection.querySelector(".transition-copy")?.style.setProperty("opacity", String(1 - Math.min(1, Math.max(0, (progress - 0.39) / 0.11))));
         ticking = false;
       });

@@ -4,8 +4,11 @@
 .omc/
 .omx/
 .vercel
+dist/
 .env*
 
 # Arquivos de trabalho local (fontes PNG dos frames, screenshots de teste)
 tmp/
 frame00-test.png
+
+.vercel

@@ -62,19 +62,24 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 .harvest-dot { background: var(--corn); border-radius: 50%; flex-shrink: 0; height: 8px; width: 8px; }
 .hero-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 22px; margin-top: 34px; }
 .hero-visual { align-items: center; background: var(--warm-white); border-radius: 32% 32% 10% 10%; display: flex; justify-content: center; min-height: 480px; overflow: hidden; position: relative; }
-.hero-visual img { filter: drop-shadow(16px 20px 18px rgba(9, 42, 26, .16)); max-height: 420px; position: relative; width: auto; z-index: 1; }
 .sun-glow { background: rgba(233, 184, 50, .35); border-radius: 50%; filter: blur(6px); height: 320px; left: 50%; position: absolute; top: 18%; transform: translate(-50%); width: 320px; }
+
+/* One continuous PNG corn, guided between scroll-positioned slots */
+.corn-slot { display: block; flex: 0 0 auto; pointer-events: none; position: relative; }
+.corn-slot-hero { aspect-ratio: 2 / 3; height: min(420px, 72vh); z-index: 1; }
+.scroll-corn { border-radius: 24px; filter: drop-shadow(0 20px 22px rgba(9, 42, 26, .16)); height: auto; left: 0; max-width: none; opacity: 0; pointer-events: none; position: fixed; top: 0; transform-origin: 0 0; user-select: none; width: 512px; will-change: opacity, transform; z-index: 12; }
+.scroll-corn.is-ready { opacity: 1; }
 
 /* 360 corn section */
 .corn360-section { background: var(--cream); padding-top: 20px; position: relative; }
 .corn360-kicker { text-align: center; }
 .corn360-sticky { height: 420vh; position: relative; }
 .corn360-stage { align-items: center; display: flex; height: 100vh; justify-content: center; position: sticky; top: 0; }
-#corn360-canvas { border-radius: 26px; display: block; height: auto; max-height: min(76vh, 720px); max-width: min(72vw, 480px); width: auto; }
-.corn360-fallback { border-radius: 26px; height: auto; margin: 0 auto; max-height: min(76vh, 720px); max-width: min(72vw, 480px); width: auto; }
-.corn360-hint { bottom: 8%; color: var(--earth); font-size: .68rem; font-weight: 600; left: 50%; letter-spacing: .12em; position: absolute; text-transform: uppercase; transform: translateX(-50%); }
+.corn-slot-story { aspect-ratio: 2 / 3; height: min(76vh, 720px); }
+.corn360-hint { bottom: 8%; color: var(--earth); font-size: .68rem; font-weight: 600; left: 50%; letter-spacing: .12em; opacity: 1; position: absolute; text-transform: uppercase; transform: translateX(-50%); transition: opacity .28s ease; z-index: 13; }
+.corn360-hint.is-hidden { opacity: 0; }
 .corn360-messages { inset: 0; pointer-events: none; position: absolute; }
-.corn360-message { color: var(--forest); font-size: clamp(1rem, 2.4vw, 1.4rem); font-weight: 700; letter-spacing: .05em; margin: 0; opacity: 0; position: absolute; transition: opacity .5s ease, transform .5s ease; transform: translateY(10px); }
+.corn360-message { color: var(--forest); font-size: clamp(1rem, 2.4vw, 1.4rem); font-weight: 700; letter-spacing: .05em; margin: 0; opacity: 0; position: absolute; transition: opacity .28s ease, transform .5s ease; transform: translateY(10px); }
 .corn360-message span { color: var(--ink); display: block; font-size: .8rem; font-weight: 500; letter-spacing: normal; margin-top: 8px; max-width: 260px; }
 .corn360-message.is-active { opacity: 1; transform: translateY(0); }
 .corn360-message[data-quadrant="0"] { left: 6%; top: 20%; text-align: left; }
@@ -85,8 +90,6 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 @media (prefers-reduced-motion: reduce) {
   .corn360-sticky { height: auto; }
   .corn360-stage { height: auto; position: static; padding: 40px 0; }
-  #corn360-canvas { display: none; }
-  .corn360-fallback { display: block !important; }
   .corn360-messages { display: none; }
 }
 
@@ -94,7 +97,7 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 .transition-section { background: #f3f0e7; height: 340vh; position: relative; }
 .origin-anchor { left: 0; position: absolute; top: 57%; }
 .transition-sticky { align-items: center; display: flex; flex-direction: column; height: 100vh; justify-content: center; isolation: isolate; overflow: hidden; position: sticky; top: 0; }
-.transition-corn { filter: drop-shadow(0 22px 24px rgba(9, 42, 26, .18)); height: auto; max-width: 260px; opacity: .9; position: relative; transition: transform .12s linear, opacity .2s linear; width: 55%; z-index: 2; }
+.corn-slot-transition { aspect-ratio: 2 / 3; width: min(55vw, 220px); z-index: 2; }
 .transition-field { height: 100%; inset: 0; object-fit: cover; opacity: 0; position: absolute; transform: scale(1.05); transition: opacity .12s linear, transform .12s linear; width: 100%; z-index: 0; }
 .transition-sticky::after { background: linear-gradient(180deg, rgba(9, 42, 26, .12), rgba(9, 42, 26, .72)); content: ""; inset: 0; opacity: 0; pointer-events: none; position: absolute; transition: opacity .12s linear; z-index: 1; }
 .transition-sticky.has-field::after { opacity: 1; }
@@ -102,10 +105,10 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 .transition-line { font-family: "Playfair Display", Georgia, serif; font-size: clamp(1.4rem, 4vw, 2.4rem); letter-spacing: -.02em; margin: 0 0 10px; opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
 .transition-line em { color: var(--corn); font-style: italic; }
 .transition-line.is-visible { opacity: 1; transform: translateY(0); }
-.transition-origin-line { color: var(--warm-white); font-family: "Playfair Display", Georgia, serif; font-size: clamp(2rem, 6vw, 4.6rem); font-weight: 700; left: 50%; letter-spacing: -.04em; line-height: 1; margin: 0; opacity: 0; padding: 0 22px; position: absolute; text-align: center; top: 50%; transform: translate(-50%, calc(-50% + 18px)); transition: opacity .8s ease, transform .8s ease; width: min(900px, 100%); z-index: 3; }
+.transition-origin-line { color: var(--warm-white); font-family: "Playfair Display", Georgia, serif; font-size: clamp(2rem, 6vw, 4.6rem); font-weight: 700; left: 50%; letter-spacing: -.04em; line-height: 1; margin: 0; opacity: 0; padding: 0 22px; position: absolute; text-align: center; top: 50%; transform: translate(-50%, calc(-50% + 18px)); transition: transform .18s linear; width: min(900px, 100%); z-index: 3; }
 .transition-origin-line em { color: var(--corn); font-style: italic; }
 .transition-origin-line.is-visible { opacity: 1; transform: translate(-50%, -50%); }
-.transition-origin-copy { color: var(--warm-white); left: 50%; opacity: 0; padding: 0 24px; position: absolute; text-align: center; top: 50%; transform: translate(-50%, calc(-50% + 26px)); transition: opacity .8s ease, transform .8s ease; width: min(620px, 100%); z-index: 3; }
+.transition-origin-copy { color: var(--warm-white); left: 50%; opacity: 0; padding: 0 24px; position: absolute; text-align: center; top: 50%; transform: translate(-50%, calc(-50% + 26px)); transition: transform .18s linear; width: min(620px, 100%); z-index: 3; }
 .transition-origin-copy.is-visible { opacity: 1; transform: translate(-50%, -50%); }
 .transition-origin-copy .section-kicker { color: var(--corn); }
 .transition-origin-copy h2 { font-size: clamp(2rem, 5vw, 3.4rem); margin-bottom: 18px; }
@@ -115,7 +118,6 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
 @media (prefers-reduced-motion: reduce) {
   .transition-section { height: auto; }
   .transition-sticky { height: auto; padding: 90px 0; position: static; }
-  .transition-corn { display: none; }
   .transition-field { inset: 0; opacity: 1; transform: none; }
   .transition-sticky::after { opacity: 1; }
   .transition-copy { display: none; }
@@ -211,10 +213,10 @@ h1 em, h2 em { color: var(--forest); font-style: italic; }
   .main-nav.open { display: flex; }
   .hero { grid-template-columns: 1fr; gap: 30px; min-height: auto; padding: 40px 0 60px; width: min(100% - 34px, 560px); }
   .hero-visual { min-height: 340px; }
-  .hero-visual img { max-height: 300px; }
+  .corn-slot-hero { height: 300px; }
   .corn360-sticky { height: 320vh; }
-  #corn360-canvas, .corn360-fallback { max-height: 58vh; max-width: 72vw; }
-  .corn360-hint { bottom: auto; top: 6%; }
+  .corn-slot-story { height: min(58vh, 520px); max-width: 72vw; }
+  .corn360-hint { bottom: auto; text-align: center; top: 12%; width: 100%; }
   .corn360-message { background: rgba(245, 240, 228, .88); border-radius: 14px; max-width: min(220px, 62vw); padding: 12px 14px; }
   .corn360-message span { max-width: 190px; }
   .corn360-message[data-quadrant] { bottom: 8%; left: 50%; right: auto; text-align: center; top: auto; transform: translate(-50%, 10px); }

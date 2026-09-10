@@ -1,0 +1,9 @@
+{
+  "name": "milho-do-vale",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-static.mjs",
+    "test": "node --test tests/blueprint-contract.test.mjs"
+  }
+}

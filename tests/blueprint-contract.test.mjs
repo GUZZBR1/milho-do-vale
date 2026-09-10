@@ -18,21 +18,34 @@ test("preserva a copy de conversão e a mensagem do WhatsApp do blueprint", () =
   assert.match(html, /Primeira colheita em <strong>fevereiro de 2027<\/strong>/i);
   assert.match(script, /Olá! Vim pelo site do Milho do Vale e gostaria de reservar milho da primeira colheita, em fevereiro de 2027\./);
   assert.match(html, /<link rel="preload" as="image" href="assets\/corn-transition\.png"/);
-  assert.match(html, /class="hero-visual[^"]*"[\s\S]*?<img src="assets\/corn-transition\.png"/);
+  assert.match(html, /id="scroll-corn"[\s\S]*?src="assets\/corn-transition\.png"/);
 });
 
-test("implementa uma volta completa com mensagens por quadrante", () => {
-  assert.match(script, /const FRAME_COUNT = 24/);
-  assert.match(script, /Math\.round\(progress \* FRAME_COUNT\) % FRAME_COUNT/);
+test("usa uma única espiga PNG que percorre os três momentos da página", () => {
+  assert.equal((html.match(/src="assets\/corn-transition\.png"/g) ?? []).length, 1);
+  assert.equal((html.match(/data-corn-slot=/g) ?? []).length, 3);
+  assert.doesNotMatch(html, /<canvas/);
+  assert.doesNotMatch(html, /class="transition-corn"/);
+  assert.match(script, /document\.body\.append\(scrollCorn\)/);
+  assert.match(script, /getBoundingClientRect\(\)/);
+  assert.match(script, /requestAnimationFrame/);
+  assert.match(script, /prefersReducedMotion/);
+  assert.match(script, /const storyDeparture = smoothstep/);
+  assert.match(script, /Math\.max\(storyDeparture, viewportTransitionArrival\)/);
+  assert.match(script, /function stateFromTransitionSlot/);
+  assert.match(script, /header\?\.getBoundingClientRect\(\)\.bottom/);
+  assert.doesNotMatch(script, /const growth =/);
+  assert.match(css, /\.scroll-corn\s*\{[^}]*position:\s*fixed;/);
+  assert.match(css, /\.scroll-corn\s*\{[^}]*will-change:\s*opacity, transform;/);
+  assert.match(css, /\.corn-slot-hero\s*\{[^}]*height:\s*min\(420px, 72vh\)/);
+  assert.match(css, /\.corn-slot-transition\s*\{[^}]*width:\s*min\(55vw, 220px\)/);
   assert.equal((html.match(/data-quadrant=/g) ?? []).length, 4);
-  assert.match(script, /requestIdleCallback/);
 });
 
 test("implementa crossfade para o campo e seis etapas fotografadas", () => {
   assert.match(html, /class="transition-field"/);
-  assert.match(html, /class="transition-corn" src="assets\/corn-transition\.png"/);
   assert.match(html, /assets\/field\/origin-field\.webp/);
-  assert.match(css, /\.transition-corn\s*\{[^}]*height:\s*auto;/, "a espiga da transição deve preservar sua proporção");
+  assert.match(script, /fieldProgress/);
   assert.equal((html.match(/class="timeline-item(?: timeline-item-right)? reveal"/g) ?? []).length, 6);
   assert.equal((html.match(/assets\/journey\/[^"]+\.webp/g) ?? []).length, 6);
   assert.equal((html.match(/loading="lazy"/g) ?? []).length, 7);
